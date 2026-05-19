@@ -10,19 +10,9 @@ The sensor module is implemented as a state machine with four states: Idle, Samp
 
 ## State diagram
 
-![diagram](.diagrams/76783026dd0d.svg)
-<details><summary>Mermaid source</summary>
+![State diagram](spec-sensor-state-machine.svg)
 
-```mermaid
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Sampling: start()
-    Sampling --> Idle: stop()
-    Sampling --> Fault: out-of-range
-    Fault --> Idle: reset()
-```
-
-</details>
+Source: [`spec-sensor-state-machine.mmd`](spec-sensor-state-machine.mmd).
 
 ## Notes
 

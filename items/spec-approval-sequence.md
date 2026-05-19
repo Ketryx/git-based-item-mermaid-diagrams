@@ -9,21 +9,6 @@ When a reviewer approves a Git-based item, Ketryx records the e-signature, trans
 
 ## Sequence
 
-![diagram](.diagrams/1581afe97cca.svg)
-<details><summary>Mermaid source</summary>
+![Approval sequence](spec-approval-sequence.svg)
 
-```mermaid
-sequenceDiagram
-    participant Reviewer
-    participant Ketryx
-    participant Repo as Git Repo
-    participant RTM as Traceability Matrix
-
-    Reviewer->>Ketryx: Approve item (e-signature)
-    Ketryx->>Ketryx: Verify reviewer permissions
-    Ketryx->>Repo: Record approval at commit SHA
-    Ketryx->>RTM: Recompute coverage
-    RTM-->>Reviewer: Updated matrix view
-```
-
-</details>
+Source: [`spec-approval-sequence.mmd`](spec-approval-sequence.mmd).

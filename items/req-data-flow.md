@@ -9,15 +9,6 @@ The Sensor Module shall acquire readings from the hardware sensor, preprocess th
 
 ## Data flow
 
-![diagram](.diagrams/5f4b9bb3b6f3.svg)
-<details><summary>Mermaid source</summary>
+![Data flow](req-data-flow.svg)
 
-```mermaid
-flowchart LR
-    Sensor[Hardware sensor] --> Acquire[Acquire raw reading]
-    Acquire --> Preprocess[Preprocess]
-    Preprocess --> Transmit[Transmit to analysis subsystem]
-    Preprocess -->|out-of-range| Warn[Raise sensor warning]
-```
-
-</details>
+Source: [`req-data-flow.mmd`](req-data-flow.mmd). To re-render after editing, run `make` at the repo root.

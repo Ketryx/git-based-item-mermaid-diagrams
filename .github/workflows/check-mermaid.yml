@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - name: Install dependencies
+      - name: Install mermaid-cli
         run: npm ci || npm install
-      - name: Verify mermaid blocks are pre-rendered
-        run: npm run check
+      - name: Verify every .mmd source matches its .svg
+        run: make check

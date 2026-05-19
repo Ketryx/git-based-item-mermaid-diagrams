@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
-# Render mermaid diagrams in any staged markdown files, then re-stage the
-# generated SVGs and updated markdown. Skipped if no .md files are staged.
+# Re-render any .mmd whose source was edited in this commit, and re-stage
+# the matching .svg. Skipped when no .mmd files are staged.
 #
 # To enable this hook, run once after cloning:
 #   git config core.hooksPath .githooks
 
 set -e
 
-staged_md=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.md$' || true)
-if [ -z "$staged_md" ]; then
+staged_mmd=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.mmd$' || true)
+if [ -z "$staged_mmd" ]; then
     exit 0
 fi
 
@@ -17,8 +17,8 @@ if [ ! -d node_modules ]; then
     npm install --silent
 fi
 
-npm run render --silent -- --staged
-
-# Re-stage the markdown the script may have rewritten and any new SVGs.
-echo "$staged_md" | xargs -I {} git add {}
-find items -type d -name .diagrams -print0 2>/dev/null | xargs -0 -I {} git add {}
+for mmd in $staged_mmd; do
+    svg="${mmd%.mmd}.svg"
+    ./node_modules/.bin/mmdc --input "$mmd" --output "$svg" --outputFormat svg --quiet
+    git add "$svg"
+done

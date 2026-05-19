@@ -1,15 +1,10 @@
 {
   "name": "git-based-item-mermaid-diagrams",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Pre-render mermaid diagrams in Ketryx git-based item markdown files",
-  "type": "module",
+  "description": "Pin @mermaid-js/mermaid-cli so `make` calls a known version",
   "engines": {
     "node": ">=20"
-  },
-  "scripts": {
-    "render": "node render-mermaid.mjs",
-    "check": "node render-mermaid.mjs --check"
   },
   "dependencies": {
     "@mermaid-js/mermaid-cli": "11.4.2"

@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant Reviewer
+    participant Ketryx
+    participant Repo as Git Repo
+    participant RTM as Traceability Matrix
+
+    Reviewer->>Ketryx: Approve item (e-signature)
+    Ketryx->>Ketryx: Verify reviewer permissions
+    Ketryx->>Repo: Record approval at commit SHA
+    Ketryx->>RTM: Recompute coverage
+    RTM-->>Reviewer: Updated matrix view

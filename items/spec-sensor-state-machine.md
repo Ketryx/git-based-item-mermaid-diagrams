@@ -8,14 +8,7 @@ itemFulfills: req-data-flow
 
 The sensor module is implemented as a state machine with four states: Idle, Sampling, Fault, and a transient initialization state.
 
-```mermaid
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Sampling: start()
-    Sampling --> Idle: stop()
-    Sampling --> Fault: out-of-range
-    Fault --> Idle: reset()
-```
+![diagram](../.mermaid/items/spec-sensor-state-machine/1.png)
 
 ## Notes
 

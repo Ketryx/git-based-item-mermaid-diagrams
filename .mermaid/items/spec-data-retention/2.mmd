@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant Scheduler
+    participant Service as Retention Service
+    participant Storage
+    participant Audit as Audit Log
+
+    Scheduler->>Service: Daily trigger
+    Service->>Storage: Query expired records
+    Storage-->>Service: Record list
+    Service->>Storage: Delete records
+    Service->>Audit: Emit retention summary
+    Audit-->>Service: Ack

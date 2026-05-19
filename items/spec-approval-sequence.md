@@ -7,8 +7,16 @@ itemType: Software Item Spec
 
 When a reviewer approves a Git-based item, Ketryx records the e-signature, transitions the item state, and recomputes the traceability matrix downstream.
 
-## Sequence
+```mermaid
+sequenceDiagram
+    participant Reviewer
+    participant Ketryx
+    participant Repo as Git Repo
+    participant RTM as Traceability Matrix
 
-![Approval sequence](spec-approval-sequence.svg)
-
-Source: [`spec-approval-sequence.mmd`](spec-approval-sequence.mmd).
+    Reviewer->>Ketryx: Approve item (e-signature)
+    Ketryx->>Ketryx: Verify reviewer permissions
+    Ketryx->>Repo: Record approval at commit SHA
+    Ketryx->>RTM: Recompute coverage
+    RTM-->>Reviewer: Updated matrix view
+```

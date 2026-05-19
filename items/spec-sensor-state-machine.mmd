@@ -1,6 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Sampling: start()
-    Sampling --> Idle: stop()
-    Sampling --> Fault: out-of-range
-    Fault --> Idle: reset()

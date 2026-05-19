@@ -2,58 +2,62 @@
 
 Render [mermaid](https://mermaid.js.org/) diagrams in Ketryx Git-based configuration items.
 
-Raw ```` ```mermaid ```` code blocks don't render in Ketryx-generated documents. Instead, commit a `.mmd` source file and a generated `.svg` next to each item, and reference the `.svg` with a plain image link.
+Raw ```` ```mermaid ```` blocks don't render in Ketryx-generated documents. Write them inline anyway — when your PR is ready, label it `render-mermaid` and a GitHub Action will:
 
-## Quickstart
+1. Extract each ` ```mermaid``` ` block.
+2. Render it to a PNG.
+3. Replace the block in the `.md` with an image link.
+4. Commit the result to your PR branch.
+
+You author markdown the way you always do. The bot handles the rest.
+
+## How it works
+
+For an item at `items/spec-foo.md` with a mermaid block, the bot produces:
+
+```
+.mermaid/items/spec-foo/1.mmd     ← extracted source
+.mermaid/items/spec-foo/1.png     ← rendered diagram
+```
+
+and rewrites `items/spec-foo.md`:
+
+```diff
+- ```mermaid
+- flowchart LR
+-     A --> B
+- ```
++ ![diagram](../.mermaid/items/spec-foo/1.png)
+```
+
+The `render-mermaid` label stays on the PR after rendering as a "this PR is rendered" badge.
+
+## Re-rendering after edits
+
+To change a diagram, edit the `.mmd` file under `.mermaid/...` directly and commit. Or add a fresh ` ```mermaid``` ` block back to the `.md`, re-apply the label, and the bot will render again.
+
+## Running it locally
 
 ```bash
 git clone https://github.com/Ketryx/git-based-item-mermaid-diagrams.git
 cd git-based-item-mermaid-diagrams
-npm install                            # installs mermaid-cli at the pinned version
-make                                   # renders every items/*.mmd into items/*.svg
-git config core.hooksPath .githooks    # enables the pre-commit re-render hook (one-time)
+npm install
+./scripts/render-mermaid.sh
 ```
-
-Open `items/spec-sensor-state-machine.md` — the image link resolves to the SVG you just generated.
-
-## Authoring a diagram
-
-1. Create `items/<name>.mmd` with the mermaid source.
-2. Commit it. The pre-commit hook re-renders the matching `.svg`. (Or run `make` manually.)
-3. In the `.md` item, reference the SVG: `![Caption](<name>.svg)`.
-4. Commit the `.md`, `.mmd`, and `.svg` together.
-
-**Naming.** One `.mmd` per diagram, named after the item it illustrates.
-
-**Multiple diagrams in one item.** Give each diagram its own `.mmd` and a distinct suffix. For example, `items/spec-build-pipeline.md` has two:
-
-```
-items/
-├── spec-build-pipeline.md
-├── spec-build-pipeline.mmd            ← stage flowchart source
-├── spec-build-pipeline.svg
-├── spec-build-pipeline-trigger.mmd    ← trigger sequence source
-└── spec-build-pipeline-trigger.svg
-```
-
-Non-mermaid images (screenshots, photos) live alongside without a `.mmd` — the convention only manages the mermaid ones.
-
-**Editing.** Edit the `.mmd`, never the `.svg`. The pre-commit hook re-renders on stage.
 
 ## Adopting in your own repo
 
 Copy:
 
-- `Makefile`
+- `scripts/render-mermaid.sh`
 - `package.json`
-- `.githooks/pre-commit`
 - `puppeteer-config.json`
-- `.github/workflows/check-mermaid.yml`
+- `.github/workflows/render-mermaid.yml`
 
-If your items live somewhere other than `items/`, adjust the `find items` path in the `Makefile`. Then run `npm install` and `git config core.hooksPath .githooks`.
+Create a label called `render-mermaid` in your repo. Adjust the `find` path in `scripts/render-mermaid.sh` if your items don't live under `items/`.
 
-For DOCX export, switch `--outputFormat svg` to `png` in the `Makefile` — Word's SVG support is inconsistent.
+The Action commits to the PR branch using the default `GITHUB_TOKEN`. This works for PRs from branches in the same repo. PRs from forks won't get auto-rendering — fork contributors run the script locally.
 
 ## Claude skill
 
-If you use [Claude Code](https://claude.com/claude-code), copy `.claude/skills/mermaid-sidecar/` into your repo. The skill teaches Claude to follow this convention when authoring or editing items.
+If you use [Claude Code](https://claude.com/claude-code), copy `.claude/skills/mermaid-sidecar/` into your repo. The skill tells Claude to write inline ` ```mermaid``` ` blocks and never hand-author the rendered links.

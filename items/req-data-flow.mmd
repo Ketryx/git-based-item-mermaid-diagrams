@@ -1,5 +1,0 @@
-flowchart LR
-    Sensor[Hardware sensor] --> Acquire[Acquire raw reading]
-    Acquire --> Preprocess[Preprocess]
-    Preprocess --> Transmit[Transmit to analysis subsystem]
-    Preprocess -->|out-of-range| Warn[Raise sensor warning]

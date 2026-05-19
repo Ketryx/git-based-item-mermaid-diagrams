@@ -1,0 +1,57 @@
+name: render-mermaid
+
+# When a PR is labeled with `render-mermaid`, copy each items/*.md to
+# items/*.doc.md, run mmdc on the copy to replace ```mermaid``` blocks
+# with image links, and commit the rendered files + PNGs back to the PR branch.
+# Source .md files are never modified. Ketryx points its glob at *.doc.md.
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  render:
+    if: github.event.label.name == 'render-mermaid'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install mermaid-cli
+        run: npm install
+
+      - name: Render mermaid blocks
+        run: |
+          find items -name '*.md' -not -name '*.doc.md' | while read md; do
+            doc="${md%.md}.doc.md"
+            cp "$md" "$doc"
+            ./node_modules/.bin/mmdc \
+              --input "$doc" --output "$doc" \
+              --outputFormat png --scale 2 --quiet \
+              --puppeteerConfigFile puppeteer-config.json
+          done
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Nothing to render — no inline mermaid blocks found."
+            exit 0
+          fi
+          git add -A
+          git commit -m "Render mermaid diagrams"
+          git push

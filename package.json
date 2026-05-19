@@ -1,0 +1,12 @@
+{
+  "name": "git-based-item-mermaid-diagrams",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Pin @mermaid-js/mermaid-cli so `make` calls a known version",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "11.4.2"
+  }
+}

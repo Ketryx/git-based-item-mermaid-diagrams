@@ -83,3 +83,4 @@ The Action commits to the PR branch using the default `GITHUB_TOKEN`, which work
 ## Claude skill
 
 If you use [Claude Code](https://claude.com/claude-code), copy `.claude/skills/mermaid-diagrams/` into your repo. The skill tells Claude to edit only `.md` source files and never touch `.doc.md` or PNGs by hand.
+

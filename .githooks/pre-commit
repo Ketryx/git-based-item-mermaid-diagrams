@@ -19,6 +19,6 @@ fi
 
 for mmd in $staged_mmd; do
     svg="${mmd%.mmd}.svg"
-    ./node_modules/.bin/mmdc --input "$mmd" --output "$svg" --outputFormat svg --quiet
+    ./node_modules/.bin/mmdc --input "$mmd" --output "$svg" --outputFormat svg --quiet --puppeteerConfigFile puppeteer-config.json
     git add "$svg"
 done
